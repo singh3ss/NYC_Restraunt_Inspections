@@ -30,14 +30,14 @@ def get_critical_violations():
         'street': 'Street',
         'zipcode': 'Zipcode',
         'inspection_date': 'Inspection Date',
-        'critical_flag': 'Critical Flag',
+        'critical_flag': 'critical_flag',
         'cuisine_description': 'Cuisine Description',
         'violation_description': 'Violation Description',
         'grade': 'Grade'
     })
 
     # Filter for critical violations in Manhattan
-    df_manhattan_critical = df[(df['Critical Flag'] == 'Critical') & (df['Borough'] == 'Manhattan')]
+    df_manhattan_critical = df[(df['critical_flag'] == 'Critical') & (df['Borough'] == 'Manhattan')]
     
     return df_manhattan_critical.sort_values(by='Inspection Date', ascending=False)
 
@@ -52,7 +52,7 @@ def home():
     else:
         # Apply styling using pandas Styler to create a custom HTML table
         def highlight_critical(row):
-            return ['critical-violation' if row['Critical Flag'] == 'Critical' else '' for _ in row]
+            return ['critical-violation' if row['critical_flag'] == 'Critical' else '' for _ in row]
 
         styled_df = df_manhattan_critical.style.set_table_attributes('class="sleek-table"').apply(highlight_critical, axis=1)
         html_table = styled_df.to_html(index=False)
