@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template_string
 import requests
 import pandas as pd
@@ -46,111 +45,79 @@ def get_critical_violations():
 def home():
     df_manhattan_critical = get_critical_violations()
     
-    
-    styled_df = df_manhattan_critical.style.set_table_attributes('class="sleek-table"')
-    html_table = styled_df.to_html(index=False)
-    
-    # Use an f-string to embed the HTML table and modern CSS
-    html_content = f"""
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manhattan Critical Violations</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {{
-            --bg-color: #2c3e50;
-            --text-color: #ecf0f1;
-            --header-bg-color: #34495e;
-            --table-border-color: #3f5469;
-            --hover-bg-color: #3b5066;
-            --critical-color: #e74c3c;
-        }}
+    # Apply a CSS class to the table for styling
+    styled_df = df_manhattan_critical.style.set_table_attributes('class="responsive-table"')
+    html_table = styled_df.to_html()
 
-        body {{
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }}
-        .container {{
-            max-width: 95%;
-            margin: 2rem auto;
-            padding: 2rem;
-            border-radius: 10px;
-            background-color: var(--bg-color);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            overflow-x: auto; /* Adds horizontal scroll for small screens */
-        }}
-        h1 {{
-            color: var(--text-color);
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            margin-bottom: 2rem;
-            text-transform: uppercase;
-        }}
-        .sleek-table {{
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            overflow: hidden; /* Ensures rounded corners are applied */
-        }}
-        .sleek-table thead {{
-            background-color: var(--header-bg-color);
-            color: #fff;
-            position: sticky;
-            top: 0;
-        }}
-        .sleek-table th, .sleek-table td {{
-            padding: 1.25rem 1.5rem;
-            text-align: left;
-            border-bottom: 1px solid var(--table-border-color);
-        }}
-        .sleek-table th {{
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }}
-        .sleek-table tbody tr {{
-            background-color: var(--bg-color);
-            transition: background-color 0.3s ease;
-        }}
-        .sleek-table tbody tr:hover {{
-            background-color: var(--hover-bg-color);
-        }}
-        .sleek-table tbody tr:last-of-type td {{
-            border-bottom: none;
-        }}
-        .critical-violation {{
-            color: var(--critical-color) !important;
-            font-weight: 600;
-        }}
-        .no-data {{
-            text-align: center;
-            font-size: 1.1rem;
-            color: #95a5a6;
-        }}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Critical Restaurant Violations in Manhattan</h1>
-        {html_table}
-    </div>
-</body>
-</html>
-"""
-    return render_template_string(html_content)
+    # HTML template with embedded CSS for responsiveness
+    template = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Manhattan Critical Violations</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+            .table-container {
+                overflow-x: auto; /* Enables horizontal scrolling for the table */
+            }
+            .responsive-table {
+                width: 100%; /* Table takes full width of its container */
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            .responsive-table th, .responsive-table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            .responsive-table th {
+                background-color: #f2f2f2;
+            }
+            /* Optional: Add media queries for more specific responsiveness */
+            @media screen and (max-width: 600px) {
+                .responsive-table thead {
+                    display: none; /* Hide table headers on small screens */
+                }
+                .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td {
+                    display: block; /* Make table elements stack vertically */
+                    width: 100%;
+                }
+                .responsive-table tr {
+                    margin-bottom: 15px;
+                    border: 1px solid #ddd;
+                }
+                .responsive-table td {
+                    text-align: right;
+                    padding-left: 50%;
+                    position: relative;
+                }
+                .responsive-table td::before {
+                    content: attr(data-th); /* Display column header as label */
+                    position: absolute;
+                    left: 6px;
+                    width: 45%;
+                    padding-right: 10px;
+                    white-space: nowrap;
+                    text-align: left;
+                    font-weight: bold;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Manhattan Critical Violations</h1>
+        <div class="table-container">
+            {{ table | safe }}
+        </div>
+    </body>
+    </html>
+    """
+    return render_template_string(template, table=html_table)
 
-# This part makes the script runnable from the command line
 if __name__ == '__main__':
     app.run(debug=True)
