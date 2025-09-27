@@ -11,7 +11,7 @@ def get_critical_violations():
     # Fetch NYC restaurant data from the API
     try:
         # Fetch up to 1000 records to ensure a good sample size
-        nyc_data = requests.get('https://data.cityofnewyork.us/resource/43nn-pn8j.json?$where=critical_flag='Critical' AND boro='Manhattan').json()
+        nyc_data = requests.get("https://data.cityofnewyork.us/resource/43nn-pn8j.json?$where=critical_flag='Critical' AND boro='Manhattan'").json()
     except requests.exceptions.RequestException as e:
         print(f"API request failed: {e}")
         return pd.DataFrame() # Return an empty DataFrame on failure
