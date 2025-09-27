@@ -46,16 +46,9 @@ def get_critical_violations():
 def home():
     df_manhattan_critical = get_critical_violations()
     
-    # Check if the dataframe is empty before converting
-    if df_manhattan_critical.empty:
-        html_table = "<p class='no-data'>No critical violations found in Manhattan or unable to fetch data.</p>"
-    else:
-        # Apply styling using pandas Styler to create a custom HTML table
-        def highlight_critical(row):
-            return ['critical-violation' if row['critical_flag'] == 'Critical' else '' for _ in row]
-
-        styled_df = df_manhattan_critical.style.set_table_attributes('class="sleek-table"').apply(highlight_critical, axis=1)
-        html_table = styled_df.to_html(index=False)
+    
+    styled_df = df_manhattan_critical.style.set_table_attributes('class="sleek-table"')
+    html_table = styled_df.to_html(index=False)
     
     # Use an f-string to embed the HTML table and modern CSS
     html_content = f"""
