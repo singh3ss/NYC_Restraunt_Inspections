@@ -23,7 +23,7 @@ def get_critical_violations():
     df = df.dropna(subset=['dba','boro','street','zipcode','inspection_date','critical_flag','cuisine_description','violation_description','grade'])
     
     # Select and rename columns for clarity
-    df = df[['dba','boro','street','zipcode','inspection_date','cuisine_description','violation_description','grade']]
+    df = df[['dba','boro','street','zipcode','inspection_date','critical_flag','cuisine_description','violation_description','grade']]
     df = df.rename(columns={
         'dba': 'Restaurant Name',
         'boro': 'Borough',
